@@ -1,66 +1,65 @@
-import org.json.*;
+/**
+ * Purpose of this class is to run the application.
+ */
 
 public class PokeApp {
 
     WebAPI webAPImanager;
     Keyboard commandKeyboard;
+    ProcessJSON jsonProcessor;
+    Texts textWriter;
 
     public PokeApp(){
         webAPImanager = new WebAPI();
         commandKeyboard = new Keyboard();
+        jsonProcessor = new ProcessJSON();
+        textWriter = new Texts();
     }
 
     private void appLoop()
     {
         boolean runtimeActive = true;
+        textWriter.printWelcomeScreen();
 
         while (runtimeActive) {
-            System.out.println("1) Pokemon information\n" +
-                               "2) Location information\n" +
-                               "0) Close the application");
+            textWriter.applicationMenu();
             String userInput = commandKeyboard.getInput();
             runtimeActive = processCommand(userInput);
         }
     }
 
     private boolean processCommand(String inputFromUser) {
+        String pokemonApiPrefix = "pokemon/";
+        String locationApiPrefix = "location/";
+
         switch (inputFromUser) {
+
             case "1":
-                System.out.println("Enter pokemon name or ID:");
-                String pokemonName = "pokemon/" + commandKeyboard.getInput();
+                textWriter.getPokemonNameOrID();
+                String pokemonName = pokemonApiPrefix + commandKeyboard.getInput();
                 String completePokemonInfo = webAPImanager.makeHTTPRequest(pokemonName);
                 if (completePokemonInfo != null) {
-                    processPokemonData(completePokemonInfo);
+                    jsonProcessor.processPokemonData(completePokemonInfo);
                 }
                 return true;
+
             case "2":
-                System.out.println("Enter location name or ID");
-                String locationName = "location/" + commandKeyboard.getInput();
+                textWriter.getLocationNameOrID();
+                String locationName = locationApiPrefix + commandKeyboard.getInput();
                 String completeLocationInfo = webAPImanager.makeHTTPRequest(locationName);
-                System.out.println(completeLocationInfo);
+                if (completeLocationInfo != null) {
+                    jsonProcessor.processLocationData(completeLocationInfo);
+                }
                 return true;
+
             case "0":
-                System.out.println("Goodbye!");
+                textWriter.applicationClosing();
                 return false;
+
             default:
-                System.out.println("You can only choose between 1, 2 and 0.");
+                textWriter.wrongMenuInput();
                 return true;
         }
-    }
-
-    private void processPokemonData(String pokemonData)
-    {
-        final JSONObject obj = new JSONObject(pokemonData);
-
-        int pokemonID = (Integer) obj.get("id");
-        String pokemonName = (String) obj.get("name");
-        int pokemonHeight = (Integer) obj.get("height");
-        int pokemonWeight = (Integer) obj.get("weight");
-
-        System.out.println("ID:\t\t" + pokemonID);
-        System.out.println("name:\t" + pokemonName);
-        System.out.println("height:\t" + pokemonHeight);
-        System.out.println("weight:\t" + pokemonWeight);
     }
 
     public static void main(String[] args) {
