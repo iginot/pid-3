@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class WebAPI {
 
-    public static String makeHTTPRequestForLavenderTown(String pokemonName) {
-        String urlString = "https://pokeapi.co/api/v2/pokemon/" + pokemonName;
+    public static String makeHTTPRequest(String requestName) {
+        String urlString = "https://pokeapi.co/api/v2/" + requestName;
         String response = null;
         try {
             URL url = new URL(urlString);
