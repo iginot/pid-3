@@ -1,3 +1,5 @@
+import org.json.*;
+
 public class PokeApp {
 
     WebAPI webAPImanager;
@@ -26,7 +28,7 @@ public class PokeApp {
                 System.out.println("Enter pokemon name. I suggest pikachu");
                 String pokemonName = commandKeyboard.getInput();
                 String result = webAPImanager.makeHTTPRequestForLavenderTown(pokemonName);
-                System.out.println(result);
+                processPokemonData(result);
                 return true;
             case "0":
                 System.out.println("exiting");
@@ -37,6 +39,20 @@ public class PokeApp {
         }
     }
 
+    private void processPokemonData(String pokemonData)
+    {
+        final JSONObject obj = new JSONObject(pokemonData);
+
+        int pokemonID = (Integer) obj.get("id");
+        String pokemonName = (String) obj.get("name");
+        int pokemonHeight = (Integer) obj.get("height");
+        int pokemonWeight = (Integer) obj.get("weight");
+
+        System.out.println("ID:\t\t" + pokemonID);
+        System.out.println("name:\t" + pokemonName);
+        System.out.println("height:\t" + pokemonHeight);
+        System.out.println("weight:\t" + pokemonWeight);
+    }
 
     public static void main(String[] args) {
         PokeApp pokeApp = new PokeApp();
