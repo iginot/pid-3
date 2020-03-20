@@ -3,15 +3,9 @@ import java.net.HttpURLConnection;
 import java.util.Scanner;
 
 public class WebAPI {
-    private void appLoop()
-    {
-        System.out.println("Let's download some web data!");
-        String result = makeHTTPRequestForLavenderTown();
-        System.out.println(result);
-    }
 
-    public static String makeHTTPRequestForLavenderTown() {
-        String urlString = "https://pokeapi.co/api/v2/location/lavender-town";
+    public static String makeHTTPRequestForLavenderTown(String pokemonName) {
+        String urlString = "https://pokeapi.co/api/v2/pokemon/" + pokemonName;
         String response = null;
         try {
             URL url = new URL(urlString);
@@ -23,14 +17,8 @@ public class WebAPI {
                 response = responseScanner.nextLine();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("No such pokemon, sorry");
         }
         return response;
-    }
-
-
-    public static void main(String[] args) {
-        WebAPI app = new WebAPI();
-        app.appLoop();
     }
 }
